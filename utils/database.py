@@ -15,7 +15,8 @@ class Database:
                                  UNIQUE,
             access_token TEXT    UNIQUE,
             valid        INTEGER DEFAULT 1,
-            vip          INTEGER DEFAULT 0 
+            vip          INTEGER DEFAULT 0,
+            eljur_token  TEXT    UNIQUE
         );''')
         self.cursor.execute('''CREATE TABLE IF NOT EXISTS callback (
             id          INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -75,3 +76,14 @@ class Database:
     def insert_callback(self, user_id: int, callback: int):
         self.cursor.execute('''INSERT INTO callback (user_id, callback) VALUES (?, ?)''',
                             (user_id, callback,))
+
+    def insert_eljur_token(self, user_id: int, eljur_token: str):
+        self.cursor.execute('''UPDATE users set eljur_token=? WHERE user_id=?''',
+                            (eljur_token, user_id,))
+        self.conn.commit()
+
+    def fetch_eljur_token(self, user_id: int):
+        self.cursor.execute('''SELECT eljur_token FROM users WHERE user_id=?''',
+                            (user_id,))
+        result = self.cursor.fetchone()
+        return result[0]
