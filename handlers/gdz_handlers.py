@@ -28,7 +28,7 @@ async def cmd_algebra(message: Message, command: CommandObject):
         return await message.reply('Пожалуйста, запрашивайте только 1 задание в 1 сообщении.')
 
     builder = MediaGroupBuilder(
-        caption=f'Вот ваше ГДЗ для {args[0]} задания',
+        caption=f'Вот ваше ГДЗ для {args[0]} задания по Алгебре',
     )
 
     r = requests.get(f'https://gdz.ru/class-8/algebra/makarychev-8/{args[0]}-nom/')
@@ -44,12 +44,40 @@ async def cmd_algebra(message: Message, command: CommandObject):
     await message.reply_media_group(builder.build())
 
 
+@gdz_router.message(Command('geometry'))
+async def cmd_geometry(message: Message, command: CommandObject):
+    if not command.args:
+        return await message.reply('Нет аргументов!')
+    if not command.args.isnumeric():
+        return await message.reply('Аргумент - не число!')
+
+    args = command.args.split()
+    if len(args) > 1:
+        return await message.reply('Пожалуйста, запрашивайте только 1 задание в 1 сообщении.')
+
+    builder = MediaGroupBuilder(
+        caption=f'Вот ваше ГДЗ для {args[0]} задания по Геометрии',
+    )
+
+    r = requests.get(f'https://gdz.top/7-klass/geometrija/atanasjan-fgos/{args[0]}')
+    lines = findline(r.text, '<img src="/geometrija_07/atanasjan-fgos/1-00/')
+
+    for i_line in range(len(lines)):
+        lines[i_line] = lines[i_line].strip().split('"')[1]
+
+    for gdz in lines:
+        builder.add_photo(
+            media='https://gdz.top/' + gdz,
+        )
+    await message.reply_media_group(builder.build())
+
+
 
 @gdz_router.message(Command('hwsupports'))
 async def cmd_hwsupports(message: Message):
     await message.answer(f'''Предметы, поддерживаемые командой /homework:
 ✅ Алгебра (100% готово)
-❓ Геометрия (50% готово, в разработке)
+✅ Геометрия (100% готово)
 ❓ Физика (0% готово)
 ❓ Русский язык (0% готово)''')
 
