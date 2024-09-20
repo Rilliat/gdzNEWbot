@@ -4,7 +4,7 @@ from utils import *
 
 from aiogram import Router
 from aiogram.filters import Command, CommandObject
-from aiogram.types import Message, FSInputFile
+from aiogram.types import Message
 from aiogram.utils.media_group import MediaGroupBuilder
 
 
@@ -16,7 +16,7 @@ def findline(base_str: str, search_str: str) -> list[str]:
     return [x for x in base_str.splitlines() if search_str in x]
 
 
-def findgdz(link, image_src, caption) -> MediaGroupBuilder:
+def findgdz(link, image_src, caption, additional = None) -> MediaGroupBuilder:
     builder = MediaGroupBuilder(
         caption=caption
     )
@@ -28,11 +28,14 @@ def findgdz(link, image_src, caption) -> MediaGroupBuilder:
         print(lines[index])
         lines[index] = lines[index].strip().split('"')[1]
         print(lines[index])
-        if lines[index][:2] == '//':
-            lines[index] = lines[index].replace('//', '')
-            print(lines[index])
+        lines[index] = lines[index].replace('//', '')
+        if lines[index][0] == '/':
+            lines[index] = lines[index][1:]
+        print(lines[index])
 
     for image in lines:
+        if additional:
+            image = additional + image
         builder.add_photo(
             media='https://' + image
         )
@@ -58,7 +61,6 @@ async def cmd_algebra(message: Message, command: CommandObject):
                                             f'Вот ваше ГДЗ для {args[0]} задания по Алгебре').build())
 
 
-
 @gdz_router.message(Command('geometry'))
 async def cmd_geometry(message: Message, command: CommandObject):
     if not command.args:
@@ -70,21 +72,10 @@ async def cmd_geometry(message: Message, command: CommandObject):
     if len(args) > 1:
         return await message.reply('Пожалуйста, запрашивайте только 1 задание в 1 сообщении.')
 
-    builder = MediaGroupBuilder(
-        caption=f'Вот ваше ГДЗ для {args[0]} задания по Геометрии',
-    )
-
-    r = requests.get(f'https://gdz.top/7-klass/geometrija/atanasjan-fgos/{args[0]}')
-    lines = findline(r.text, '<img src="/geometrija_07/atanasjan-fgos/1-00/')
-
-    for i_line in range(len(lines)):
-        lines[i_line] = lines[i_line].strip().split('"')[1]
-
-    for gdz in lines:
-        builder.add_photo(
-            media='https://gdz.top/' + gdz,
-        )
-    await message.reply_media_group(builder.build())
+    await message.reply_media_group(findgdz(f'https://gdz.top/7-klass/geometrija/atanasjan-fgos/{args[0]}',
+                                            '/geometrija_07/atanasjan-fgos/1-00/',
+                                            f'Вот ваше ГДЗ для {args[0]} задания по Геометрии',
+                                            'gdz.top/').build())
 
 
 @gdz_router.message(Command('physics'))
