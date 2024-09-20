@@ -48,7 +48,7 @@ async def main():
     dp.include_routers(base_router, admin_router, gdz_router)
 
     # Подключение фильтра на корневой роутер (диспетчер)
-    dp.message.filter(IsAllowed())
+    dp.update.filter(IsAllowed())
 
     # Подключение фильтра на сообщения и инлайн-кнопки для админ-роутера
     admin_router.message.filter(IsAdmin())
