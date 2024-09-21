@@ -18,7 +18,7 @@ async def error_admin(bot: Bot, message: Message, err):
         print(e)
 
 
-async def process_callback(message: Message):
+async def process_feedback(message: Message):
     if random.randint(1, 5) == 1:
         keyboard = [[InlineKeyboardButton(text='1 ⭐', callback_data='1'),
                      InlineKeyboardButton(text='2 ⭐', callback_data='2'),
