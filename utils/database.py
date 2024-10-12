@@ -51,12 +51,12 @@ class Database:
                             (user_id, callback,))
         self.conn.commit()
 
-    def check_access(self, user_id: int):
+    def check_access(self, user_id: int) -> str:
         self.cursor.execute('''SELECT access_token FROM users WHERE user_id=?''',
                             (user_id,))
         return self.cursor.fetchone()[0]
 
-    def check_callback(self, user_id: int = None):
+    def check_callback(self, user_id: int = None) -> float:
         if user_id is None:
             self.cursor.execute('''SELECT AVG(callback) FROM callback''')
         else:
@@ -64,7 +64,7 @@ class Database:
                                 (user_id,))
         return self.cursor.fetchone()[0]
 
-    def check_users(self, valid: bool = None, vip: bool = None):
+    def check_users(self, valid: bool = None, vip: bool = None) -> int:
         if valid:
             self.cursor.execute('''SELECT COUNT(*) FROM users WHERE valid=1''')
         elif vip:
@@ -76,13 +76,14 @@ class Database:
     def insert_callback(self, user_id: int, callback: int):
         self.cursor.execute('''INSERT INTO callback (user_id, callback) VALUES (?, ?)''',
                             (user_id, callback,))
+        self.conn.commit()
 
     def insert_eljur_token(self, user_id: int, eljur_token: str):
         self.cursor.execute('''UPDATE users set eljur_token=? WHERE user_id=?''',
                             (eljur_token, user_id,))
         self.conn.commit()
 
-    def fetch_eljur_token(self, user_id: int):
+    def fetch_eljur_token(self, user_id: int) -> str:
         self.cursor.execute('''SELECT eljur_token FROM users WHERE user_id=?''',
                             (user_id,))
         result = self.cursor.fetchone()

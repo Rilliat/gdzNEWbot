@@ -7,6 +7,7 @@ from datetime import datetime
 from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
+from aiogram import F
 
 # Импорт утилит, роутеров, хэндлеров и т.д.
 from utils import *
@@ -34,7 +35,7 @@ async def on_shutdown(bot: Bot):
 # Запуск процесса поллинга новых апдейтов
 async def main():
     # Включаем логирование, чтобы не пропустить важные сообщения
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
     # Объект бота
     bot = Bot(token=config.api_token,
@@ -45,7 +46,7 @@ async def main():
     await bot.delete_webhook(drop_pending_updates=True)
 
     # Подключение роутеров из других файлов
-    dp.include_routers(base_router, admin_router, gdz_router)
+    dp.include_routers(base_router, admin_router, gdz_router, eljur_router)
 
     # Подключение фильтра на корневой роутер (диспетчер)
     dp.update.filter(IsAllowed())
@@ -59,7 +60,7 @@ async def main():
     dp.shutdown.register(on_shutdown)
 
     # Подключение функции слушания инлайн-кнопок для оценок бота в базовом роутере
-    base_router.callback_query.register(return_callback)
+    base_router.callback_query.register(return_callback, F.data.in_({1, 2, 3, 4, 5}))
 
     # Процесс поллинга новых апдейтов
     await dp.start_polling(bot)

@@ -24,9 +24,6 @@ async def cmd_start(message: Message):
         msg = msg.format('')
 
     await message.reply(msg)
-    await message.reply(f'Привет! Я - ГДЗ-бот, могу прислать тебе готовую домашку по некоторым предметам! \n'
-                        f'Кстати, владелец - <a href="tg://user?id=1655585249">@rilliat</a>\n'
-                        f'Для объяснения всех команд - добро пожаловать в /help :)')
     await process_feedback(message)
 
 
