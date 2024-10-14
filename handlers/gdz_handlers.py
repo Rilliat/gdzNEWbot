@@ -22,6 +22,7 @@ async def cmd_algebra(message: Message, command: CommandObject, bot: Bot):
             return await message.reply('Пожалуйста, запрашивайте только 1 задание в 1 сообщении.')
 
         await message.reply_media_group(get_algebra(args[0]).build())
+        await process_feedback(message)
 
     except Exception as e:
         await error_admin(bot, message, e)
@@ -40,6 +41,8 @@ async def cmd_geometry(message: Message, command: CommandObject, bot: Bot):
             return await message.reply('Пожалуйста, запрашивайте только 1 задание в 1 сообщении.')
 
         await message.reply_media_group(get_geometry(args[0]).build())
+        await process_feedback(message)
+
     except Exception as e:
         await error_admin(bot, message, e)
 
@@ -112,6 +115,8 @@ async def cmd_physics(message: Message, command: CommandObject, bot: Bot):
                                       f'Вот ваше гдз для задачи {args[0]} по Физике')
 
             await message.reply_media_group(builder.build())
+            await process_feedback(message)
+
 
         except IndexError:
             await message.reply(
@@ -142,6 +147,8 @@ async def cmd_russian(message: Message, command: CommandObject, bot: Bot):
             return await message.reply('Пожалуйста, запрашивайте только 1 задание в 1 сообщении.')
 
         await message.reply_media_group(get_russian(args[0]).build())
+        await process_feedback(message)
+
 
     except Exception as e:
         await error_admin(bot, message, e)
@@ -160,6 +167,8 @@ async def cmd_english(message: Message, command: CommandObject, bot: Bot):
             return await message.reply('Пожалуйста, запрашивайте только 1 страницу в 1 сообщении.')
 
         await message.reply_media_group(get_english(args[0]).build())
+        await process_feedback(message)
+
 
     except Exception as e:
         await error_admin(bot, message, e)
@@ -170,15 +179,17 @@ async def cmd_hwsupports(message: Message, bot: Bot):
     try:
         await message.answer('Предметы, поддерживаемые ботом (📰 означает то, что в /homework этот предмет '
                              'будет работать):\n'
-                             '✅ Алгебра (100% готово)\n'
-                             '✅ Геометрия (100% готово)\n'
-                             '✅ Физика (100% готово)\n'
-                             '✅ Русский язык (100% готово)\n'
-                             '✅ Английский язык (100% готово)\n'
+                             '📰✅ Алгебра (100% готово)\n'
+                             '📰✅ Геометрия (100% готово)\n'
+                             '📰✅ Физика (100% готово)\n'
+                             '📰✅ Русский язык (100% готово)\n'
+                             '📰✅ Английский язык (100% готово)\n'
                              '❓ Биология (0% готово)\n'
                              '❓ Химия (0% готово)\n'
                              '❓ Вероятность и статистика (0% готово)\n'
-                             '❓ (0% готово)\n'
-                             '❓ (0% готово)\n')
+                             '❓ ... (0% готово)\n'
+                             '❓ ... (0% готово)\n')
+        await process_feedback(message)
+
     except Exception as e:
         await error_admin(bot, message, e)

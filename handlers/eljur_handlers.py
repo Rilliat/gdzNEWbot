@@ -6,7 +6,7 @@ from aiogram.filters import Command, CommandObject
 
 from eljur_utils import create_student, create_token, get_parsed_diary, parse_to_future, make_table, find_exercises, \
     parse_homework_to_future
-from utils import error_admin, get_algebra, get_geometry, get_russian, get_english
+from utils import error_admin, get_algebra, get_geometry, get_russian, get_english, process_feedback
 from utils.database import Database
 
 eljur_router = Router()
@@ -18,11 +18,12 @@ async def get_token(message: Message, bot: Bot):
     try:
         student = await create_student(message.from_user.id)
         if student is None:
-            return await message.reply('У вас нет токена входа. Авторизоваться: /login логин пароль')
+            await message.reply('У вас нет токена входа. Авторизоваться: /login логин пароль')
         else:
-            return await message.reply(f'У вас есть токен входа. Если проблемы со входом все же имеются, обратитесь к '
+            await message.reply(f'У вас есть токен входа. Если проблемы со входом все же имеются, обратитесь к '
                                        f'<a href="https://t.me/rilliat">разработчику</a>\n'
                                        f'<tg-spoiler>{database.fetch_eljur_token(message.from_user.id)}</tg-spoiler>')
+        await process_feedback(message)
     except Exception as e:
         await error_admin(bot, message, e)
 
@@ -45,10 +46,11 @@ async def login(message: Message, command: CommandObject, bot: Bot):
             if token is None:
                 return await message.reply('Произошла какая-то ошибка...\n'
                                            'обратитесь к <a href="https://t.me/rilliat">разработчику</a>')
-            return await message.reply('Авторизация прошла успешно!\n'
+            await message.reply('Авторизация прошла успешно!\n'
                                        f'Ваш токен: '
                                        f'<tg-spoiler>{database.fetch_eljur_token(message.from_user.id)}</tg-spoiler> '
                                        f'(на самом деле он вам не понадобится)')
+            await process_feedback(message)
         else:
             return await message.reply(
                 'Использование: /login логин пароль. Если вы хотите обновить токен, обратитесь к '
@@ -136,8 +138,7 @@ async def get_homework(message: Message, bot: Bot):
                         msg = await message.reply_media_group(get_english(exercise).build())
                         await msg[0].reply(f'ГДЗ по Английскому языку на {hw.date}, {exercise} задания')
 
-
-
+        await process_feedback(message)
 
     except Exception as e:
         await error_admin(bot, message, e)

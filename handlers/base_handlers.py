@@ -55,6 +55,7 @@ async def cmd_help(message: Message):
         msg = msg.format('')
 
     await message.reply(msg)
+    await process_feedback(message)
 
 
 @base_router.message(Command('todo'))
@@ -65,4 +66,5 @@ async def cmd_todo(message: Message):
                         '❌ Реализовать систему автодобавления юзера по токену'
                         '❌ Багофикс\n'
                         '❌ Другое\n'
-)
+    )
+    await process_feedback(message)
