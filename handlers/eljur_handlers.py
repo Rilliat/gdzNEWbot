@@ -12,8 +12,9 @@ from utils.database import Database
 eljur_router = Router()
 database = Database()
 
+
 @eljur_router.message(Command('token'))
-async def set_token(message: Message, bot: Bot):
+async def get_token(message: Message, bot: Bot):
     try:
         student = await create_student(message.from_user.id)
         if student is None:
@@ -33,8 +34,9 @@ async def login(message: Message, command: CommandObject, bot: Bot):
         if student is None and not command.args:
             return await message.reply('Использование: /login логин пароль')
         elif not command.args:
-            return await message.reply('Использование: /login логин пароль. Если вы хотите обновить токен, обратитесь к '
-                                       '<a href="https://t.me/rilliat">разработчику</a>')
+            return await message.reply(
+                'Использование: /login логин пароль. Если вы хотите обновить токен, обратитесь к '
+                '<a href="https://t.me/rilliat">разработчику</a>')
         elif len(command.args.split()) == 2:
             await message.reply('Проводим попытку входа...')
             token = await create_token(message.from_user.id,
@@ -48,8 +50,9 @@ async def login(message: Message, command: CommandObject, bot: Bot):
                                        f'<tg-spoiler>{database.fetch_eljur_token(message.from_user.id)}</tg-spoiler> '
                                        f'(на самом деле он вам не понадобится)')
         else:
-            return await message.reply('Использование: /login логин пароль. Если вы хотите обновить токен, обратитесь к '
-                                       '<a href="https://t.me/rilliat">разработчику</a>')
+            return await message.reply(
+                'Использование: /login логин пароль. Если вы хотите обновить токен, обратитесь к '
+                '<a href="https://t.me/rilliat">разработчику</a>')
 
     except Exception as e:
         await error_admin(bot, message, e)
@@ -107,11 +110,34 @@ async def get_homework(message: Message, bot: Bot):
                         msg = await message.reply_media_group(get_english(exercise).build())
                         await msg[0].reply(f'ГДЗ по Английскому языку на {hw.date}, {exercise} задания')
 
+        for hw in hw_after_tomorrow:
+            match hw.lesson:
+                case 'Алгебра':
+                    exercises = find_exercises(hw)
+                    for exercise in exercises:
+                        msg = await message.reply_media_group(get_algebra(exercise).build())
+                        await msg[0].reply(f'ГДЗ по Алгебре на {hw.date}, {exercise} задания')
+
+                case 'Геометрия':
+                    exercises = find_exercises(hw)
+                    for exercise in exercises:
+                        msg = await message.reply_media_group(get_geometry(exercise).build())
+                        await msg[0].reply(f'ГДЗ по Геометрии на {hw.date}, {exercise} задания')
+
+                case 'Русский язык':
+                    exercises = find_exercises(hw)
+                    for exercise in exercises:
+                        msg = await message.reply_media_group(get_russian(exercise).build())
+                        await msg[0].reply(f'ГДЗ по Русскому языку на {hw.date}, {exercise} задания')
+
+                case 'Иностранный язык (английский)':
+                    exercises = find_exercises(hw)
+                    for exercise in exercises:
+                        msg = await message.reply_media_group(get_english(exercise).build())
+                        await msg[0].reply(f'ГДЗ по Английскому языку на {hw.date}, {exercise} задания')
+
 
 
 
     except Exception as e:
         await error_admin(bot, message, e)
-
-
-
