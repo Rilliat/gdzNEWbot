@@ -88,3 +88,7 @@ class Database:
                             (user_id,))
         result = self.cursor.fetchone()
         return result[0]
+
+    def fetch_vip_users(self) -> tuple[int]:
+        self.cursor.execute('''SELECT user_id FROM users WHERE valid=1 AND vip=1 AND eljur_token IS NOT NULL''')
+        return self.cursor.fetchall()[0]

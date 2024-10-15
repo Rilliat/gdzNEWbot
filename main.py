@@ -1,8 +1,3 @@
-# Импорт вспомогательных библиотек
-import asyncio
-import logging
-from datetime import datetime
-
 # Импорт объектов из aiogram
 from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
@@ -13,9 +8,18 @@ from aiogram import F
 from utils import *
 from handlers import *
 from utils.misc import return_callback
+from utils.schedules import send_homework
+
+# Импорт вспомогательных библиотек
+import asyncio
+import logging
+from datetime import datetime
+import aioschedule
 
 # Объект базы данных
 db = database.Database()
+# Первичная инициализация БД
+db.initialize()
 
 # Диспетчер
 dp = Dispatcher()
@@ -36,6 +40,7 @@ async def on_shutdown(bot: Bot):
 async def main():
     # Включаем логирование, чтобы не пропустить важные сообщения
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    logging.getLogger(__name__)
 
     # Объект бота
     bot = Bot(token=config.api_token,
@@ -61,6 +66,10 @@ async def main():
 
     # Подключение функции слушания инлайн-кнопок для оценок бота в базовом роутере
     base_router.callback_query.register(return_callback, F.data.in_({1, 2, 3, 4, 5}))
+
+    # Настройка планировщика задач на рассылку ГДЗ VIP-пользователям
+    users = db.fetch_vip_users()
+    aioschedule.every().day.at('15:00').do(send_homework, users=users, bot=bot)
 
     # Процесс поллинга новых апдейтов
     await dp.start_polling(bot)
