@@ -40,7 +40,7 @@ def get_algebra(num: str) -> MediaGroupBuilder:
 
 def get_geometry(num: str) -> MediaGroupBuilder:
     return findgdz(f'https://gdz.top/7-klass/geometrija/atanasjan-fgos/{num}',
-                   '/geometrija_07/atanasjan-fgos/1-00/',
+                   '/geometrija_07/atanasjan-fgos/3-00/',
                    f'Вот ваше ГДЗ для {num} задания по Геометрии',
                    'gdz.top/')
 
