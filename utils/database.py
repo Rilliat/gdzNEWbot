@@ -9,7 +9,7 @@ class Database:
         self.cursor = self.conn.cursor()
 
     def initialize(self):
-        self.cursor.execute('''CREATE TABLE users (
+        self.cursor.execute('''CREATE TABLE IF NOT EXISTS users (
             id           INTEGER PRIMARY KEY AUTOINCREMENT,
             user_id      INTEGER NOT NULL
                                  UNIQUE,

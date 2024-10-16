@@ -12,7 +12,7 @@ base_router = Router()
 # Хэндлер на команду /start
 @base_router.message(CommandStart(deep_link=False))
 async def cmd_start(message: Message):
-    msg = ('Здравствуйте! Вас приветствует ГДЗ-бот от <a href="https://t.me/rilliat>Rilliat</a>.\n'
+    msg = ('Здравствуйте! Вас приветствует ГДЗ-бот от <a href="https://t.me/rilliat">Rilliat</a>.\n'
            'Все команды: /help'
            '\n\n{0}')
 
@@ -62,8 +62,8 @@ async def cmd_help(message: Message):
 async def cmd_todo(message: Message):
     await message.reply('TODO:\n'
                         '✅ v3\n'
-                        '❌ Добавить другие предметы'
-                        '❌ Реализовать систему автодобавления юзера по токену'
+                        '❌ Добавить другие предметы\n'
+                        '❌ Реализовать систему автодобавления юзера по токену\n'
                         '❌ Багофикс\n'
                         '❌ Другое\n'
     )

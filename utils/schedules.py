@@ -1,7 +1,7 @@
+import asyncio
 import datetime
 import logging
-import sched
-import time
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 from aiogram import Bot
 
@@ -12,7 +12,7 @@ from utils import get_russian, get_english, get_geometry, get_algebra, error_adm
 logging.getLogger(__name__)
 
 
-async def send_homework(users: list[int], bot: Bot):
+async def send_homework(users: tuple[int], bot: Bot):
     try:
         for user in users:
             student = await eljur_utils.create_student(user)
@@ -97,7 +97,13 @@ async def send_homework(users: list[int], bot: Bot):
                     elif isinstance(message, list):
                         await bot.send_media_group(user, message)
                     else:
-                        logging.warning('Unhandled message in utils.schedules.py' + str(type(message)))
+                        logging.error('Unhandled message in utils.schedules.py' + str(type(message)))
 
     except Exception as e:
         logging.error(e)
+
+
+async def scheduler(users: tuple[int], bot: Bot):
+    sched = AsyncIOScheduler()
+    sched.add_job(send_homework, 'cron', hour='15', minute='0', args=(users, bot))
+    sched.start()

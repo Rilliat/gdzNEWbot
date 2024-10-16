@@ -1,3 +1,9 @@
+# Проверка минимальной версии Python (на 3.11 не работает из-за старых f-strings)
+import sys
+MIN_PYTHON = (3, 12)
+if sys.version_info < MIN_PYTHON:
+    sys.exit("Python %s.%s or later is required.\n" % MIN_PYTHON)
+
 # Импорт объектов из aiogram
 from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
@@ -8,13 +14,12 @@ from aiogram import F
 from utils import *
 from handlers import *
 from utils.misc import return_callback
-from utils.schedules import send_homework
 
 # Импорт вспомогательных библиотек
 import asyncio
 import logging
 from datetime import datetime
-import aioschedule
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 # Объект базы данных
 db = database.Database()
@@ -29,6 +34,11 @@ async def on_startup(bot: Bot):
     for admin in admins:
         await bot.send_message(admin, f'Бот запущен!'
                                       f'\n\n<i>{datetime.now().strftime('%d-%m-%Y %H:%M:%S')}</i>')
+
+    # Настройка планировщика задач на рассылку ГДЗ VIP-пользователям
+    users = db.fetch_vip_users()
+    await scheduler(users, bot)
+
 
 async def on_shutdown(bot: Bot):
     for admin in admins:
@@ -65,11 +75,7 @@ async def main():
     dp.shutdown.register(on_shutdown)
 
     # Подключение функции слушания инлайн-кнопок для оценок бота в базовом роутере
-    base_router.callback_query.register(return_callback, F.data.in_({1, 2, 3, 4, 5}))
-
-    # Настройка планировщика задач на рассылку ГДЗ VIP-пользователям
-    users = db.fetch_vip_users()
-    aioschedule.every().day.at('15:00').do(send_homework, users=users, bot=bot)
+    base_router.callback_query.register(return_callback, F.data.isnumeric())
 
     # Процесс поллинга новых апдейтов
     await dp.start_polling(bot)
