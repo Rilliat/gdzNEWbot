@@ -19,7 +19,6 @@ from utils.misc import return_callback
 import asyncio
 import logging
 from datetime import datetime
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 # Объект базы данных
 db = database.Database()
@@ -49,13 +48,15 @@ async def on_shutdown(bot: Bot):
 # Запуск процесса поллинга новых апдейтов
 async def main():
     # Включаем логирование, чтобы не пропустить важные сообщения
-    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    logging.basicConfig(level=logging.INFO,
+                        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     logging.getLogger(__name__)
 
     # Объект бота
-    bot = Bot(token=config.api_token,
-              default=DefaultBotProperties(parse_mode=ParseMode.HTML,
-                                           protect_content=True))
+    bot = Bot(token=config.api_token,                                   # API-токен для подключения к боту
+              default=DefaultBotProperties(parse_mode=ParseMode.HTML,   # HTML-режим форматирования
+                                           protect_content=True),       # Отключение скриншотов, копирования и пересылки
+              session=config.session)                                   # Подключение сессии (PRODUCTION или TEST)
 
     # Сброс накопленных за время простоя сообщений
     await bot.delete_webhook(drop_pending_updates=True)

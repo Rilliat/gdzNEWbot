@@ -70,3 +70,6 @@ testeljur.py
 
 # secrets
 .env
+
+# Logs
+/bot.log
