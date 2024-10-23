@@ -102,7 +102,10 @@ class Database:
 
     def fetch_vip_users(self) -> tuple[int]:
         self.cursor.execute('''SELECT user_id FROM users WHERE valid=1 AND vip=1 AND eljur_token IS NOT NULL''')
-        return self.cursor.fetchall()[0]
+        try:
+            return self.cursor.fetchall()[0]
+        except IndexError:
+            return (0,)
 
     def add_token(self, token: str):
         self.cursor.execute('''INSERT INTO tokens (token) VALUES (?)''',

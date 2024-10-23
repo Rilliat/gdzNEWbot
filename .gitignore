@@ -65,11 +65,11 @@ docs/html
 .python-version
 
 # custom
-data.db
+*.db
 testeljur.py
 
 # secrets
 .env
 
 # Logs
-/bot.log
+bot.log

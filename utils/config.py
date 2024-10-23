@@ -15,6 +15,9 @@ testing_environment = True if str(os.getenv('TEST_BOT')) == 'True' else False
 admins = (list(map(int, filter(None, str(os.getenv('TEST_ADMIN_IDS')).split(":"))))
           if testing_environment is True
           else admins)
+database_name = (str(os.getenv('TEST_DATABASE_NAME'))
+                 if testing_environment is True
+                 else database_name)
 
 api = PRODUCTION if testing_environment is False else TEST
 session = AiohttpSession(api=api)

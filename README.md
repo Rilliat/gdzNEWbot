@@ -34,9 +34,13 @@ cp .env.example .env
 
 **Необязательные для изменения поля:**
 - `DATABASE_NAME` - Файл базы данных. По умолчанию `data.db`, но при особом желании может быть изменено
-- `TEST_API_TOKEN` - Изменяйте только в случае, когда Вам хочется заняться разработкой при включённом боте
-- `TEST_BOT` - Изменяйте на `True` в случае, когда надо запустить бота с `TEST_API_TOKEN`
-- `TEST_SERVER` - Изменяйте на `True` в случае, когда надо запустить бота в тестовом окружении Telegram ([core.telegram.org](https://core.telegram.org/bots/features#testing-your-bot))
+
+**Поля для тестирования на тестовом окружении ([core.telegram.org](https://core.telegram.org/bots/features#testing-your-bot))**
+- `TEST_BOT` - Изменяйте на `True` в случае, когда надо запустить бота в тестовом окружении Telegram 
+- `TEST_API_TOKEN` - API токен из тестового окружения
+- `TEST_ADMIN_IDS` - Строка с Telegram ID пользователей, которые должны иметь доступ к /admin-панели. Разделены двоеточием (`:`)
+- `TEST_DATABASE_NAME` - Файл тестовой базы данных. По умолчанию `test_data.db`, но при особом желании может быть изменено
+
 
 -----
 

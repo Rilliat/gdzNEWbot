@@ -5,11 +5,11 @@ from aiogram.filters import BaseFilter
 from aiogram.types import Message
 
 
-db = database.Database()
 
 
 class IsAllowed(BaseFilter):
     async def __call__(self, message: Message) -> bool:
+        db = database.Database()
         if db.check_access(message.from_user.id):
             return True
         else:

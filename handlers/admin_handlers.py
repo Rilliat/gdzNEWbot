@@ -69,7 +69,8 @@ async def call_admin_add_user(call: CallbackQuery, state: FSMContext):
     await state.set_state(AdminAddingUser.choosing_id)
     await call.message.edit_text('Хорошо. Напишите ID пользователя:')
 
-@admin_router.callback_query(AdminAddingUser.choosing_id)
+
+@admin_router.message(AdminAddingUser.choosing_id)
 async def call_admin_add_user_choosed_id(message: Message, state: FSMContext):
     await state.clear()
     if not message.text.isnumeric():

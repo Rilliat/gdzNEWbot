@@ -20,16 +20,9 @@ import asyncio
 import logging
 from datetime import datetime
 
-# Объект базы данных
-db = database.Database()
-# Первичная инициализация БД
-db.initialize()
-
-# Диспетчер
-dp = Dispatcher()
 
 # Функции отправки сообщений о запуске и остановке бота админам
-async def on_startup(bot: Bot):
+async def on_startup(bot: Bot, db: Database):
     for admin in admins:
         await bot.send_message(admin, f'Бот запущен!'
                                       f'\n\n<i>{datetime.now().strftime('%d-%m-%Y %H:%M:%S')}</i>')
@@ -52,6 +45,14 @@ async def main():
                         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     logging.getLogger(__name__)
 
+    # Объект базы данных
+    db = database.Database()
+    # Первичная инициализация БД
+    db.initialize()
+
+    # Диспетчер
+    dp = Dispatcher()
+
     # Объект бота
     bot = Bot(token=config.api_token,                                   # API-токен для подключения к боту
               default=DefaultBotProperties(parse_mode=ParseMode.HTML,   # HTML-режим форматирования
@@ -72,6 +73,7 @@ async def main():
     admin_router.callback_query.filter(IsAdmin())
 
     # Подключение функций отправки сообщения о старте и остановке бота админам
+    dp['db'] = db
     dp.startup.register(on_startup)
     dp.shutdown.register(on_shutdown)
 
