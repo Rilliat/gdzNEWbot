@@ -49,7 +49,7 @@ async def cmd_help(message: Message):
     admin_msg = ('Админ-команды:\n'
                  '/admin - админ-панель')
 
-    if IsAdmin():
+    if IsAdmin().__call__(message):
         msg = msg.format(admin_msg)
     else:
         msg = msg.format('')

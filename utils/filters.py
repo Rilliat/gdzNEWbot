@@ -12,7 +12,7 @@ from aiogram.types import Message, Update
 message_logger = logging.getLogger('message_logger')
 message_logger.setLevel(logging.INFO)
 
-message_handler = logging.FileHandler('message_logger.log', mode='w')
+message_handler = logging.FileHandler('message_logger.log', mode='a', encoding='utf-8')
 message_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 message_handler.setFormatter(message_formatter)
 
@@ -42,6 +42,6 @@ class LoggingMiddleware(BaseMiddleware):
             event: Update | Any,
             data: Dict[str, Any],
     ) -> Any:
-        message_logger.info(data['event_from_user'].first_name + ': ' + event.message.text if event.message else event.callback_query.data)
+        message_logger.info(data['event_from_user'].first_name + ': ' + (event.message.text if event.message else event.callback_query.data))
         return await handler(event, data)
 

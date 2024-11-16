@@ -4,9 +4,10 @@ from aiogram.fsm.state import State, StatesGroup
 from utils import *
 
 from aiogram import Router, F
-from aiogram.filters import Command
+from aiogram.filters import Command, CommandObject
 from aiogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
 
+from async_eval import eval
 
 db = Database()
 admin_router = Router()
@@ -20,6 +21,10 @@ class AdminManager(StatesGroup):
     adding_token = State()
     switching_token = State()
 
+
+@admin_router.message(Command('eval'))
+async def eval_admin(message: Message, command: CommandObject):
+    await message.reply(str(eval(command.args)))
 
 @admin_router.message(Command('admin'))
 async def cmd_admin(message: Message):

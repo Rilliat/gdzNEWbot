@@ -63,7 +63,7 @@ async def main():
     await bot.delete_webhook(drop_pending_updates=True)
 
     # Подключение роутеров из других файлов
-    dp.include_routers(base_router, admin_router, gdz_router, eljur_router)
+    dp.include_routers(base_router, admin_router, gdz_router, eljur_router, no_access_router)
 
     # Подключение фильтра на корневой роутер (диспетчер)
     dp.update.filter(IsAllowed())
