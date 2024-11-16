@@ -32,9 +32,9 @@ class LoggingMiddleware(BaseMiddleware):
     async def __call__(
             self,
             handler: Callable[[Message, Dict[str, Any]], Awaitable[Any]],
-            event: Message,
+            event: Message | Any,
             data: Dict[str, Any],
     ) -> Any:
-        logging.info(data['event_from_user'].first_name + ' ' + event['message'].text)
+        logging.info(data['event_from_user'].first_name + ' ' + event.message.text)
         return await handler(event, data)
 
