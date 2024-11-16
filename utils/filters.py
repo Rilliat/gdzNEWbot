@@ -35,6 +35,7 @@ class LoggingMiddleware(BaseMiddleware):
             event: Message,
             data: Dict[str, Any],
     ) -> Any:
-        logging.info(data['event_from_user'].first_name + ' ' + data['event_text'])
+        logging.info(data)
+        logging.info(data['event_from_user'].first_name + ' ' + data['text'])
         return await handler(event, data)
 
