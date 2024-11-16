@@ -9,7 +9,14 @@ from . import config
 from aiogram.filters import BaseFilter
 from aiogram.types import Message
 
+message_logger = logging.getLogger('message_logger')
+message_logger.setLevel(logging.INFO)
 
+message_handler = logging.FileHandler('message_logger.log', mode='w')
+message_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+message_handler.setFormatter(message_formatter)
+
+message_logger.addHandler(message_handler)
 
 
 class IsAllowed(BaseFilter):
@@ -35,6 +42,6 @@ class LoggingMiddleware(BaseMiddleware):
             event: Message | Any,
             data: Dict[str, Any],
     ) -> Any:
-        logging.info(data['event_from_user'].first_name + ' ' + event.message.text)
+        message_logger.info(data['event_from_user'].first_name + ' ' + event.message.text)
         return await handler(event, data)
 
