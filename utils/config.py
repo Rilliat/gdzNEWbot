@@ -1,5 +1,4 @@
 from aiogram.client.session.aiohttp import AiohttpSession
-from aiogram.client.session.base import BaseSession
 from aiogram.client.telegram import PRODUCTION, TEST
 from dotenv import load_dotenv
 import os

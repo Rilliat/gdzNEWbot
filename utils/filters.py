@@ -1,3 +1,8 @@
+import logging
+from typing import Callable, Dict, Awaitable, Any
+
+from aiogram import BaseMiddleware
+
 from . import database
 from . import config
 
@@ -21,4 +26,15 @@ class IsAdmin(BaseFilter):
             return True
         else:
             return False
+
+
+class LoggingMiddleware(BaseMiddleware):
+    async def __call__(
+            self,
+            handler: Callable[[Message, Dict[str, Any]], Awaitable[Any]],
+            event: Message,
+            data: Dict[str, Any],
+    ) -> Any:
+        logging.info(event.from_user + ' ' + event.text)
+        return await handler(event, data)
 

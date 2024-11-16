@@ -1,4 +1,3 @@
-import asyncio
 import datetime
 import logging
 from apscheduler.schedulers.asyncio import AsyncIOScheduler

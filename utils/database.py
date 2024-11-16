@@ -44,6 +44,11 @@ class Database:
                             (user_id,))
         self.conn.commit()
 
+    def remove_user(self, user_id: int):
+        self.cursor.execute('''DELETE FROM users WHERE user_id = ?''',
+                            (user_id,))
+        self.conn.commit()
+
     def add_access_token_to_user(self, user_id: int, access_token: str):
         self.cursor.execute('''UPDATE users SET access_token_id=(SELECT id FROM tokens WHERE token='?') 
                                    WHERE user_id=?''',

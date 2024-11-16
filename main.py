@@ -4,12 +4,6 @@ MIN_PYTHON = (3, 12)
 if sys.version_info < MIN_PYTHON:
     sys.exit("Python %s.%s or later is required.\n" % MIN_PYTHON)
 
-# Импорт объектов из aiogram
-from aiogram import Bot, Dispatcher
-from aiogram.client.default import DefaultBotProperties
-from aiogram.enums import ParseMode
-from aiogram import F
-
 # Импорт утилит, роутеров, хэндлеров и т.д.
 from utils import *
 from handlers import *
@@ -19,6 +13,12 @@ from utils.misc import return_callback
 import asyncio
 import logging
 from datetime import datetime
+
+# Импорт объектов из aiogram
+from aiogram import Bot, Dispatcher
+from aiogram.client.default import DefaultBotProperties
+from aiogram.enums import ParseMode
+from aiogram import F
 
 
 # Функции отправки сообщений о запуске и остановке бота админам
@@ -67,6 +67,9 @@ async def main():
 
     # Подключение фильтра на корневой роутер (диспетчер)
     dp.update.filter(IsAllowed())
+
+    # Подключение миддлвари логирования потому что да, а хули нет, я хочу чекать че пишут
+    dp.update.outer_middleware(LoggingMiddleware())
 
     # Подключение фильтра на сообщения и инлайн-кнопки для админ-роутера
     admin_router.message.filter(IsAdmin())
