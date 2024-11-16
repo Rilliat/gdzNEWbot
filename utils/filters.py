@@ -7,7 +7,7 @@ from . import database
 from . import config
 
 from aiogram.filters import BaseFilter
-from aiogram.types import Message
+from aiogram.types import Message, Update
 
 message_logger = logging.getLogger('message_logger')
 message_logger.setLevel(logging.INFO)
@@ -39,9 +39,9 @@ class LoggingMiddleware(BaseMiddleware):
     async def __call__(
             self,
             handler: Callable[[Message, Dict[str, Any]], Awaitable[Any]],
-            event: Message | Any,
+            event: Update | Any,
             data: Dict[str, Any],
     ) -> Any:
-        message_logger.info(data['event_from_user'].first_name + ' ' + event.message.text)
+        message_logger.info(data['event_from_user'].first_name + ': ' + event.message.text if event.message else event.callback_query.data)
         return await handler(event, data)
 
