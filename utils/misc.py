@@ -1,4 +1,5 @@
 import random
+import git
 
 from aiogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
 

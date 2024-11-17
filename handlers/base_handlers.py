@@ -5,6 +5,7 @@ from aiogram.filters import Command, CommandStart
 from aiogram.types import Message
 
 from utils.misc import process_feedback
+from utils import version
 
 db = Database()
 base_router = Router()
@@ -33,6 +34,7 @@ async def cmd_help(message: Message):
            '<code>/start</code> - (пере)запустить бота\n'
            '<code>/help</code> - показать это сообщение\n'
            '<code>/todo</code> - TODO-список (список целей и задач)\n'
+           '<code>/version</code> - версия бота\n'
            '\n'
            '<code>/algebra номер</code> - ГДЗ по алгебре на нужный номер\n'
            '<code>/geometry номер</code> - ГДЗ по геометрии на нужный номер\n'
@@ -61,10 +63,18 @@ async def cmd_help(message: Message):
 @base_router.message(Command('todo'))
 async def cmd_todo(message: Message):
     await message.reply('TODO:\n'
-                        '✅ v3\n'
-                        '❌ Добавить другие предметы\n'
-                        '❌ Реализовать систему автодобавления юзера по токену\n'
-                        '❌ Багофикс\n'
-                        '❌ Другое\n'
+                        '✅ v4\n'
+                        '✅ Улучшенный интерфейс\n'
+                        '✅ Список изменений\n'
+                        '❌ Полноценная VIP-система\n'
+                        '❌ Добавление других предметов\n'
+                        '❌ Чат с поддержкой\n'
     )
     await process_feedback(message)
+
+
+@base_router.message(Command('version'))
+async def cmd_version(message: Message):
+    await message.reply(f'Версия бота: {version.__version__} (<code>#{version.get_git_hash()}</code>)\n'
+                        f'Статус обновления: {version.get_update_status()}')
+
